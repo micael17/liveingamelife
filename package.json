@@ -1,0 +1,28 @@
+{
+  "name": "liveingamelife-blogger",
+  "version": "1.0.0",
+  "description": "Blogger 관리 도구 - liveingamelife.blogspot.com",
+  "type": "module",
+  "scripts": {
+    "sync": "tsx scripts/sync.ts",
+    "publish": "tsx scripts/publish.ts",
+    "update": "tsx scripts/update.ts",
+    "preview": "tsx scripts/preview.ts",
+    "theme:backup": "tsx scripts/theme-backup.ts",
+    "theme:deploy": "tsx scripts/theme-deploy.ts",
+    "setup": "tsx scripts/setup.ts"
+  },
+  "dependencies": {
+    "googleapis": "^144.0.0",
+    "marked": "^15.0.4",
+    "turndown": "^7.2.0",
+    "gray-matter": "^4.0.3",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "@types/node": "^22.10.1",
+    "@types/turndown": "^5.0.5"
+  }
+}

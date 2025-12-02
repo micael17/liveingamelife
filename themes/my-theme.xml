@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  커스텀 Blogger 테마
+  이 파일을 수정한 후 pnpm theme:deploy로 적용하세요.
+-->
+<!DOCTYPE html>
+<html b:version='2' class='v2' expr:dir='data:blog.languageDirection' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<head>
+  <meta content='width=device-width, initial-scale=1' name='viewport'/>
+  <b:include data='blog' name='all-head-content'/>
+  <title><data:blog.pageTitle/></title>
+
+  <b:skin><![CDATA[
+    /*
+    ================================================
+    여기에 CSS를 작성하세요
+    ================================================
+    */
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.8;
+      color: #333;
+      background: #f5f5f5;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* 헤더 */
+    .header {
+      background: #fff;
+      padding: 30px 20px;
+      text-align: center;
+      border-bottom: 1px solid #eee;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .header h1 a {
+      color: #333;
+      text-decoration: none;
+    }
+
+    /* 메인 콘텐츠 */
+    .main {
+      padding: 20px 0;
+    }
+
+    /* 포스트 */
+    .post {
+      background: #fff;
+      padding: 30px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .post-title {
+      font-size: 24px;
+      margin-bottom: 15px;
+    }
+
+    .post-title a {
+      color: #333;
+      text-decoration: none;
+    }
+
+    .post-title a:hover {
+      color: #0066cc;
+    }
+
+    .post-meta {
+      color: #888;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .post-body {
+      font-size: 16px;
+    }
+
+    .post-body img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* 라벨 */
+    .post-labels {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+    }
+
+    .post-labels a {
+      display: inline-block;
+      padding: 4px 12px;
+      margin-right: 8px;
+      background: #e9ecef;
+      color: #666;
+      text-decoration: none;
+      border-radius: 20px;
+      font-size: 12px;
+    }
+
+    /* 사이드바 */
+    .sidebar {
+      margin-top: 30px;
+    }
+
+    .widget {
+      background: #fff;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+    }
+
+    .widget h2 {
+      font-size: 16px;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    /* 푸터 */
+    .footer {
+      text-align: center;
+      padding: 30px 20px;
+      color: #888;
+      font-size: 14px;
+    }
+
+    /* 애드센스 영역 (필요시 추가) */
+    .adsense-container {
+      margin: 20px 0;
+      text-align: center;
+    }
+
+  ]]></b:skin>
+</head>
+
+<body>
+  <!-- 헤더 -->
+  <header class='header'>
+    <h1><a expr:href='data:blog.homepageUrl'><data:blog.title/></a></h1>
+    <p><data:blog.description/></p>
+  </header>
+
+  <div class='container'>
+    <!-- 메인 콘텐츠 -->
+    <main class='main'>
+      <b:section class='main-section' id='main' showaddelement='no'>
+        <b:widget id='Blog1' locked='true' title='블로그 게시물' type='Blog' version='1'>
+          <b:includable id='main' var='top'>
+            <b:loop values='data:posts' var='post'>
+              <article class='post'>
+                <h2 class='post-title'>
+                  <a expr:href='data:post.url'><data:post.title/></a>
+                </h2>
+                <div class='post-meta'>
+                  <data:post.dateHeader/>
+                </div>
+                <div class='post-body'>
+                  <data:post.body/>
+                </div>
+                <b:if cond='data:post.labels'>
+                  <div class='post-labels'>
+                    <b:loop values='data:post.labels' var='label'>
+                      <a expr:href='data:label.url'><data:label.name/></a>
+                    </b:loop>
+                  </div>
+                </b:if>
+              </article>
+            </b:loop>
+          </b:includable>
+        </b:widget>
+      </b:section>
+    </main>
+
+    <!-- 사이드바 -->
+    <aside class='sidebar'>
+      <b:section class='sidebar-section' id='sidebar' showaddelement='yes'>
+        <!-- 여기에 위젯 추가 -->
+      </b:section>
+    </aside>
+  </div>
+
+  <!-- 푸터 -->
+  <footer class='footer'>
+    <p>© <data:blog.title/></p>
+  </footer>
+</body>
+</html>
