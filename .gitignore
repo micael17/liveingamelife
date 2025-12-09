@@ -3,3 +3,6 @@ node_modules/
 dist/
 *.log
 .DS_Store
+
+# 블로그 글 (pnpm sync로 다운로드 가능)
+posts/

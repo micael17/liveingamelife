@@ -1,326 +1,854 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
-  커스텀 Blogger 테마
-  이 파일을 수정한 후 pnpm theme:deploy로 적용하세요.
+  liveingamelife - Minimal B&W Theme
+  SEO 최적화 + 검색/인기글/관련글/댓글/모바일메뉴
 -->
 <!DOCTYPE html>
-<html b:version='2' class='v2' expr:dir='data:blog.languageDirection' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<html b:version='2' class='v2' expr:dir='data:blog.languageDirection' expr:lang='data:blog.locale' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
 <head>
-  <meta content='width=device-width, initial-scale=1' name='viewport'/>
+  <meta content='width=device-width, initial-scale=1, maximum-scale=5' name='viewport'/>
   <b:include data='blog' name='all-head-content'/>
+
+  <!-- SEO: Title -->
   <title><data:blog.pageTitle/></title>
+
+  <!-- SEO: robots meta (올바른 설정) -->
+  <b:if cond='data:blog.searchLabel or data:blog.searchQuery'>
+    <meta content='noindex, follow' name='robots'/>
+  <b:else/>
+    <meta content='index, follow' name='robots'/>
+  </b:if>
+
+  <!-- SEO: Canonical URL -->
+  <link expr:href='data:blog.canonicalUrl' rel='canonical'/>
+
+  <!-- SEO: Open Graph -->
+  <meta expr:content='data:blog.pageTitle' property='og:title'/>
+  <meta content='website' property='og:type'/>
+  <meta expr:content='data:blog.canonicalUrl' property='og:url'/>
+  <meta expr:content='data:blog.title' property='og:site_name'/>
+  <b:if cond='data:blog.postImageThumbnailUrl'>
+    <meta expr:content='data:blog.postImageThumbnailUrl' property='og:image'/>
+  </b:if>
+  <b:if cond='data:blog.metaDescription'>
+    <meta expr:content='data:blog.metaDescription' property='og:description'/>
+  </b:if>
+
+  <!-- SEO: Twitter Card -->
+  <meta content='summary_large_image' name='twitter:card'/>
+  <meta expr:content='data:blog.pageTitle' name='twitter:title'/>
+  <b:if cond='data:blog.metaDescription'>
+    <meta expr:content='data:blog.metaDescription' name='twitter:description'/>
+  </b:if>
+  <b:if cond='data:blog.postImageThumbnailUrl'>
+    <meta expr:content='data:blog.postImageThumbnailUrl' name='twitter:image'/>
+  </b:if>
 
   <b:skin><![CDATA[
     /*
     ================================================
-    NEON MINIMAL THEME
-    메인: #FF2D92 (핫 핑크)
-    서브1: #00FFC6 (사이버 민트)
-    서브2: #00D4FF (일렉트릭 블루)
-    서브3: #BF5AF2 (네온 퍼플)
+    MINIMAL B&W THEME - liveingamelife
     ================================================
     */
-
     :root {
-      --neon-pink: #FF2D92;
-      --neon-mint: #00FFC6;
-      --neon-blue: #00D4FF;
-      --neon-purple: #BF5AF2;
-      --bg-white: #FFFFFF;
-      --bg-light: #FAFAFA;
-      --text-dark: #1A1A1A;
-      --text-gray: #666666;
-      --border-light: #EEEEEE;
+      --black: #1A1A1A;
+      --white: #FFFFFF;
+      --gray-light: #FAFAFA;
+      --gray-medium: #888888;
+      --gray-border: #E5E5E5;
+      --transition: 0.2s ease;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;
       line-height: 1.8;
-      color: var(--text-dark);
-      background: var(--bg-light);
+      color: var(--black);
+      background: var(--gray-light);
     }
 
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    /* 헤더 */
-    .header {
-      background: var(--bg-white);
-      padding: 40px 20px;
-      text-align: center;
-      border-bottom: 2px solid var(--border-light);
-    }
-
-    .header h1 {
-      font-size: 32px;
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
-
-    .header h1 a {
-      color: var(--text-dark);
+    a {
+      color: var(--black);
       text-decoration: none;
-      transition: color 0.2s ease;
+      transition: opacity var(--transition);
     }
 
-    .header h1 a:hover {
-      color: var(--neon-pink);
+    a:hover { opacity: 0.7; }
+
+    /* ===== 레이아웃 ===== */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px;
     }
 
-    .header p {
-      color: var(--text-gray);
-      font-size: 14px;
-    }
-
-    /* 메인 콘텐츠 */
-    .main {
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 30px;
       padding: 30px 0;
     }
 
-    /* 포스트 */
-    .post {
-      background: var(--bg-white);
-      padding: 35px;
-      margin-bottom: 25px;
-      border-radius: 12px;
-      box-shadow: 0 2px 20px rgba(0,0,0,0.04);
-      border: 1px solid var(--border-light);
-      transition: box-shadow 0.2s ease;
+    @media (max-width: 800px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
     }
 
-    .post:hover {
-      box-shadow: 0 4px 30px rgba(0,0,0,0.08);
+    /* ===== 헤더 ===== */
+    .header {
+      background: var(--white);
+      padding: 30px 20px;
+      text-align: center;
+      border-bottom: 1px solid var(--gray-border);
+      position: relative;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .header p {
+      color: var(--gray-medium);
+      font-size: 14px;
+      margin-top: 5px;
+    }
+
+    /* ===== 모바일 메뉴 ===== */
+    .mobile-menu-btn {
+      display: none;
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: 1px solid var(--black);
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .mobile-menu-btn:hover {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    @media (max-width: 800px) {
+      .mobile-menu-btn { display: block; }
+
+      .sidebar {
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 280px;
+        height: 100vh;
+        background: var(--white);
+        z-index: 1000;
+        overflow-y: auto;
+        padding: 20px;
+        box-shadow: -5px 0 20px rgba(0,0,0,0.1);
+      }
+
+      .sidebar.active { display: block; }
+
+      .mobile-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 999;
+      }
+
+      .mobile-overlay.active { display: block; }
+
+      .sidebar-close {
+        display: block;
+        text-align: right;
+        margin-bottom: 20px;
+        font-size: 24px;
+        cursor: pointer;
+      }
+    }
+
+    @media (min-width: 801px) {
+      .sidebar-close { display: none; }
+    }
+
+    /* ===== 포스트 ===== */
+    .post {
+      background: var(--white);
+      padding: 35px;
+      margin-bottom: 25px;
+      border-radius: 8px;
+      border: 1px solid var(--gray-border);
     }
 
     .post-title {
-      font-size: 26px;
+      font-size: 24px;
       font-weight: 700;
       margin-bottom: 12px;
+      line-height: 1.4;
     }
 
     .post-title a {
-      color: var(--text-dark);
-      text-decoration: none;
-      transition: color 0.2s ease;
-    }
-
-    .post-title a:hover {
-      color: var(--neon-pink);
+      color: var(--black);
     }
 
     .post-meta {
-      color: var(--neon-blue);
+      color: var(--gray-medium);
       font-size: 13px;
-      font-weight: 500;
       margin-bottom: 20px;
-      letter-spacing: 0.5px;
     }
 
     .post-body {
       font-size: 16px;
       line-height: 1.9;
-      color: var(--text-dark);
     }
 
     .post-body img {
       max-width: 100%;
       height: auto;
-      border-radius: 8px;
+      border-radius: 4px;
       margin: 20px 0;
     }
 
     .post-body a {
-      color: var(--neon-pink);
-      text-decoration: none;
-      border-bottom: 1px solid transparent;
-      transition: border-color 0.2s ease;
+      text-decoration: underline;
     }
 
-    .post-body a:hover {
-      border-bottom-color: var(--neon-pink);
+    .post-body pre {
+      background: var(--black);
+      color: var(--white);
+      padding: 20px;
+      border-radius: 4px;
+      overflow-x: auto;
+      margin: 20px 0;
     }
 
-    /* 라벨 - 네온 컬러 순환 */
+    .post-body code {
+      background: var(--gray-light);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 0.9em;
+    }
+
+    .post-body pre code {
+      background: none;
+      padding: 0;
+      color: var(--white);
+    }
+
+    .post-body blockquote {
+      border-left: 3px solid var(--black);
+      padding-left: 20px;
+      margin: 20px 0;
+      color: var(--gray-medium);
+      font-style: italic;
+    }
+
+    .post-body h2, .post-body h3, .post-body h4 {
+      margin: 30px 0 15px;
+    }
+
+    .post-body ul, .post-body ol {
+      margin: 15px 0;
+      padding-left: 25px;
+    }
+
+    /* ===== 라벨 ===== */
     .post-labels {
       margin-top: 25px;
       padding-top: 25px;
-      border-top: 1px solid var(--border-light);
+      border-top: 1px solid var(--gray-border);
     }
 
-    .post-labels a {
+    .post-labels a,
+    .label-tag {
       display: inline-block;
-      padding: 6px 14px;
+      padding: 5px 12px;
       margin-right: 8px;
       margin-bottom: 8px;
-      background: var(--bg-white);
-      color: var(--neon-mint);
-      text-decoration: none;
-      border-radius: 20px;
+      background: var(--white);
+      color: var(--black);
+      border-radius: 3px;
       font-size: 12px;
-      font-weight: 600;
-      border: 1.5px solid var(--neon-mint);
-      transition: all 0.2s ease;
+      font-weight: 500;
+      border: 1px solid var(--black);
+      transition: all var(--transition);
     }
 
-    .post-labels a:nth-child(2n) {
-      color: var(--neon-purple);
-      border-color: var(--neon-purple);
+    .post-labels a:hover,
+    .label-tag:hover {
+      background: var(--black);
+      color: var(--white);
+      opacity: 1;
     }
 
-    .post-labels a:nth-child(3n) {
-      color: var(--neon-blue);
-      border-color: var(--neon-blue);
+    /* ===== 관련글 ===== */
+    .related-posts {
+      background: var(--white);
+      padding: 25px 35px;
+      margin-bottom: 25px;
+      border-radius: 8px;
+      border: 1px solid var(--gray-border);
     }
 
-    .post-labels a:nth-child(4n) {
-      color: var(--neon-pink);
-      border-color: var(--neon-pink);
-    }
-
-    .post-labels a:hover {
-      background: var(--neon-pink);
-      color: var(--bg-white);
-      border-color: var(--neon-pink);
-    }
-
-    /* 사이드바 */
-    .sidebar {
-      margin-top: 30px;
-    }
-
-    .widget {
-      background: var(--bg-white);
-      padding: 25px;
-      margin-bottom: 20px;
-      border-radius: 12px;
-      border: 1px solid var(--border-light);
-    }
-
-    .widget h2 {
+    .related-posts h3 {
       font-size: 14px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1px;
       margin-bottom: 15px;
-      padding-bottom: 12px;
-      border-bottom: 2px solid var(--neon-mint);
-      color: var(--text-dark);
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--gray-border);
     }
 
-    .widget a {
-      color: var(--text-dark);
-      text-decoration: none;
-      transition: color 0.2s ease;
+    .related-posts ul {
+      list-style: none;
     }
 
-    .widget a:hover {
-      color: var(--neon-pink);
+    .related-posts li {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--gray-border);
     }
 
-    /* 푸터 */
-    .footer {
-      text-align: center;
-      padding: 40px 20px;
-      color: var(--text-gray);
-      font-size: 13px;
+    .related-posts li:last-child {
+      border-bottom: none;
     }
 
-    .footer a {
-      color: var(--neon-purple);
-      text-decoration: none;
+    .related-posts a {
+      font-size: 14px;
     }
 
-    /* 스크롤바 커스텀 */
-    ::-webkit-scrollbar {
-      width: 8px;
+    /* ===== 댓글 ===== */
+    .comments {
+      background: var(--white);
+      padding: 35px;
+      border-radius: 8px;
+      border: 1px solid var(--gray-border);
     }
 
-    ::-webkit-scrollbar-track {
-      background: var(--bg-light);
+    .comments h3 {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--gray-border);
     }
 
-    ::-webkit-scrollbar-thumb {
-      background: var(--neon-pink);
+    .comment {
+      padding: 20px 0;
+      border-bottom: 1px solid var(--gray-border);
+    }
+
+    .comment:last-child {
+      border-bottom: none;
+    }
+
+    .comment-author {
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .comment-date {
+      font-size: 12px;
+      color: var(--gray-medium);
+      margin-bottom: 10px;
+    }
+
+    .comment-body {
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    #comment-form textarea {
+      width: 100%;
+      padding: 15px;
+      border: 1px solid var(--gray-border);
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 14px;
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    #comment-form button {
+      margin-top: 10px;
+      padding: 10px 25px;
+      background: var(--black);
+      color: var(--white);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: opacity var(--transition);
+    }
+
+    #comment-form button:hover {
+      opacity: 0.8;
+    }
+
+    /* ===== 사이드바 ===== */
+    .sidebar {
+      padding: 30px 0;
+    }
+
+    .widget {
+      background: var(--white);
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      border: 1px solid var(--gray-border);
+    }
+
+    .widget h2, .widget h3 {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--gray-border);
+    }
+
+    /* 검색 위젯 */
+    .widget input[type="search"],
+    .widget input[type="text"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--gray-border);
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .widget input[type="search"]:focus,
+    .widget input[type="text"]:focus {
+      outline: none;
+      border-color: var(--black);
+    }
+
+    /* 인기글 위젯 */
+    .popular-posts .item-content {
+      display: flex;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--gray-border);
+    }
+
+    .popular-posts .item-content:last-child {
+      border-bottom: none;
+    }
+
+    .popular-posts .item-thumbnail {
+      width: 60px;
+      height: 60px;
+      flex-shrink: 0;
+    }
+
+    .popular-posts .item-thumbnail img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
       border-radius: 4px;
     }
 
-    /* 선택 영역 */
-    ::selection {
-      background: var(--neon-pink);
-      color: var(--bg-white);
+    .popular-posts .item-title {
+      font-size: 13px;
+      line-height: 1.5;
+      font-weight: 500;
     }
 
-    /* 애드센스 영역 */
-    .adsense-container {
-      margin: 25px 0;
+    /* 라벨 위젯 */
+    .widget ul {
+      list-style: none;
+    }
+
+    .widget li {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--gray-border);
+      font-size: 14px;
+    }
+
+    .widget li:last-child {
+      border-bottom: none;
+    }
+
+    /* 아카이브 위젯 */
+    .archive-list select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--gray-border);
+      border-radius: 4px;
+      font-size: 14px;
+      background: var(--white);
+    }
+
+    /* ===== 페이지네이션 ===== */
+    .pagination {
       text-align: center;
-      padding: 20px;
-      background: var(--bg-white);
-      border-radius: 12px;
-      border: 1px dashed var(--border-light);
+      padding: 20px 0;
+    }
+
+    .pagination a {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 0 5px;
+      border: 1px solid var(--black);
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .pagination a:hover {
+      background: var(--black);
+      color: var(--white);
+      opacity: 1;
+    }
+
+    /* ===== 푸터 ===== */
+    .footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--gray-medium);
+      font-size: 13px;
+      border-top: 1px solid var(--gray-border);
+    }
+
+    /* ===== 유틸리티 ===== */
+    ::selection {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--gray-light); }
+    ::-webkit-scrollbar-thumb { background: var(--black); border-radius: 3px; }
+
+    /* 스킵 네비게이션 (접근성) */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--black);
+      color: var(--white);
+      padding: 8px 16px;
+      z-index: 100;
+    }
+
+    .skip-link:focus {
+      top: 0;
     }
 
   ]]></b:skin>
 </head>
 
 <body>
+  <!-- 접근성: 스킵 네비게이션 -->
+  <a class='skip-link' href='#main-content'>본문으로 건너뛰기</a>
+
+  <!-- 모바일 오버레이 -->
+  <div class='mobile-overlay' id='mobileOverlay' onclick='closeMobileMenu()'/>
+
   <!-- 헤더 -->
   <header class='header'>
-    <h1><a expr:href='data:blog.homepageUrl'><data:blog.title/></a></h1>
-    <p><data:blog.description/></p>
+    <div class='container'>
+      <h1><a expr:href='data:blog.homepageUrl'><data:blog.title/></a></h1>
+      <b:if cond='data:blog.description'>
+        <p><data:blog.description/></p>
+      </b:if>
+      <button class='mobile-menu-btn' onclick='openMobileMenu()'>메뉴</button>
+    </div>
   </header>
 
   <div class='container'>
-    <!-- 메인 콘텐츠 -->
-    <main class='main'>
-      <b:section class='main-section' id='main' showaddelement='no'>
-        <b:widget id='Blog1' locked='true' title='블로그 게시물' type='Blog' version='1'>
-          <b:includable id='main' var='top'>
-            <b:loop values='data:posts' var='post'>
-              <article class='post'>
-                <h2 class='post-title'>
-                  <a expr:href='data:post.url'><data:post.title/></a>
-                </h2>
-                <div class='post-meta'>
-                  <data:post.dateHeader/>
-                </div>
-                <div class='post-body'>
-                  <data:post.body/>
-                </div>
-                <b:if cond='data:post.labels'>
-                  <div class='post-labels'>
-                    <b:loop values='data:post.labels' var='label'>
-                      <a expr:href='data:label.url'><data:label.name/></a>
-                    </b:loop>
+    <div class='layout'>
+      <!-- 메인 콘텐츠 -->
+      <main class='main' id='main-content'>
+        <b:section class='main-section' id='main' showaddelement='no'>
+          <b:widget id='Blog1' locked='true' title='블로그 게시물' type='Blog' version='2'>
+            <b:includable id='main' var='top'>
+              <b:loop values='data:posts' var='post'>
+                <article class='post'>
+                  <!-- 포스트 제목 -->
+                  <h2 class='post-title'>
+                    <b:if cond='data:post.url'>
+                      <a expr:href='data:post.url'><data:post.title/></a>
+                    <b:else/>
+                      <data:post.title/>
+                    </b:if>
+                  </h2>
+
+                  <!-- 포스트 메타 -->
+                  <div class='post-meta'>
+                    <data:post.dateHeader/>
+                    <b:if cond='data:post.author'>
+                      · <data:post.author/>
+                    </b:if>
+                  </div>
+
+                  <!-- 포스트 본문 -->
+                  <div class='post-body'>
+                    <data:post.body/>
+                  </div>
+
+                  <!-- 라벨 -->
+                  <b:if cond='data:post.labels'>
+                    <div class='post-labels'>
+                      <b:loop values='data:post.labels' var='label'>
+                        <a class='label-tag' expr:href='data:label.url'><data:label.name/></a>
+                      </b:loop>
+                    </div>
+                  </b:if>
+                </article>
+
+                <!-- 관련글 (개별 포스트 페이지에서만) -->
+                <b:if cond='data:blog.pageType == "item"'>
+                  <div class='related-posts'>
+                    <h3>관련글</h3>
+                    <div id='related-posts-container'>
+                      <p style='color: var(--gray-medium); font-size: 14px;'>관련글을 불러오는 중...</p>
+                    </div>
                   </div>
                 </b:if>
-              </article>
-            </b:loop>
-          </b:includable>
-        </b:widget>
-      </b:section>
-    </main>
 
-    <!-- 사이드바 -->
-    <aside class='sidebar'>
-      <b:section class='sidebar-section' id='sidebar' showaddelement='yes'>
-        <!-- 여기에 위젯 추가 -->
-      </b:section>
-    </aside>
+                <!-- 댓글 (개별 포스트 페이지에서만) -->
+                <b:if cond='data:blog.pageType == "item"'>
+                  <b:if cond='data:post.allowComments'>
+                    <section class='comments'>
+                      <h3>댓글 <b:if cond='data:post.numComments &gt; 0'>(<data:post.numComments/>)</b:if></h3>
+                      <div id='comments'>
+                        <b:loop values='data:post.comments' var='comment'>
+                          <div class='comment'>
+                            <div class='comment-author'><data:comment.author/></div>
+                            <div class='comment-date'><data:comment.dateHeader/></div>
+                            <div class='comment-body'><data:comment.body/></div>
+                          </div>
+                        </b:loop>
+                      </div>
+                      <div id='comment-form'>
+                        <b:include data='post' name='comment-form'/>
+                      </div>
+                    </section>
+                  </b:if>
+                </b:if>
+              </b:loop>
+
+              <!-- 페이지네이션 -->
+              <div class='pagination'>
+                <b:if cond='data:newerPageUrl'>
+                  <a expr:href='data:newerPageUrl'>← 최신글</a>
+                </b:if>
+                <b:if cond='data:olderPageUrl'>
+                  <a expr:href='data:olderPageUrl'>이전글 →</a>
+                </b:if>
+              </div>
+            </b:includable>
+
+            <!-- 댓글 폼 includable -->
+            <b:includable id='comment-form' var='post'>
+              <b:if cond='data:post.embedCommentForm'>
+                <b:include data='post' name='iframe-comments'/>
+              </b:if>
+            </b:includable>
+
+            <b:includable id='iframe-comments' var='post'>
+              <b:if cond='data:post.allowIframeComments'>
+                <iframe allowtransparency='true' class='blogger-iframe-color498'
+                  expr:height='data:cmtIframeInitialHeight'
+                  expr:id='data:widget.instanceId + &quot;_cmtIframe&quot;'
+                  expr:src='data:post.commentSrc'
+                  frameborder='0'
+                  scrolling='no'
+                  style='width: 100%; border: none;'
+                  width='100%'/>
+              </b:if>
+            </b:includable>
+
+            <!-- 기타 필수 includables -->
+            <b:includable id='nextprev'/>
+            <b:includable id='postQuickEdit'/>
+            <b:includable id='shareButtons'/>
+            <b:includable id='threadedComments'/>
+            <b:includable id='threaded-comment-form'/>
+            <b:includable id='backlinks'/>
+            <b:includable id='post-footer-line'/>
+            <b:includable id='feedLinks'/>
+            <b:includable id='feedLinksBody'/>
+            <b:includable id='post'/>
+            <b:includable id='status-message'/>
+          </b:widget>
+        </b:section>
+      </main>
+
+      <!-- 사이드바 -->
+      <aside class='sidebar' id='sidebar'>
+        <span class='sidebar-close' onclick='closeMobileMenu()'>×</span>
+
+        <b:section class='sidebar-section' id='sidebar-widgets' showaddelement='yes'>
+          <!-- 검색 위젯 -->
+          <b:widget id='BlogSearch1' locked='false' title='검색' type='BlogSearch' version='2'>
+            <b:includable id='main'>
+              <div class='widget'>
+                <h3><data:title/></h3>
+                <form expr:action='data:blog.searchUrl' method='get'>
+                  <input expr:value='data:blog.searchQuery' name='q' placeholder='검색어 입력...' type='search'/>
+                </form>
+              </div>
+            </b:includable>
+          </b:widget>
+
+          <!-- 인기글 위젯 -->
+          <b:widget id='PopularPosts1' locked='false' title='인기글' type='PopularPosts' version='2'>
+            <b:includable id='main'>
+              <div class='widget popular-posts'>
+                <h3><data:title/></h3>
+                <b:loop values='data:posts' var='post'>
+                  <div class='item-content'>
+                    <b:if cond='data:post.featuredImage'>
+                      <div class='item-thumbnail'>
+                        <a expr:href='data:post.url'>
+                          <img expr:alt='data:post.title' expr:src='data:post.featuredImage resz 120'/>
+                        </a>
+                      </div>
+                    </b:if>
+                    <div class='item-title'>
+                      <a expr:href='data:post.url'><data:post.title/></a>
+                    </div>
+                  </div>
+                </b:loop>
+              </div>
+            </b:includable>
+          </b:widget>
+
+          <!-- 라벨 위젯 -->
+          <b:widget id='Label1' locked='false' title='카테고리' type='Label' version='2'>
+            <b:includable id='main'>
+              <div class='widget'>
+                <h3><data:title/></h3>
+                <ul>
+                  <b:loop values='data:labels' var='label'>
+                    <li>
+                      <a expr:href='data:label.url'>
+                        <data:label.name/> (<data:label.count/>)
+                      </a>
+                    </li>
+                  </b:loop>
+                </ul>
+              </div>
+            </b:includable>
+          </b:widget>
+
+          <!-- 아카이브 위젯 -->
+          <b:widget id='BlogArchive1' locked='false' title='아카이브' type='BlogArchive' version='2'>
+            <b:includable id='main'>
+              <div class='widget'>
+                <h3><data:title/></h3>
+                <div class='archive-list'>
+                  <select onchange='if(this.value) window.location.href=this.value'>
+                    <option value=''>월별 보기</option>
+                    <b:loop values='data:data' var='i'>
+                      <option expr:value='data:i.url'>
+                        <data:i.name/> (<data:i.post-count/>)
+                      </option>
+                    </b:loop>
+                  </select>
+                </div>
+              </div>
+            </b:includable>
+          </b:widget>
+        </b:section>
+      </aside>
+    </div>
   </div>
 
   <!-- 푸터 -->
   <footer class='footer'>
     <p>© <data:blog.title/></p>
   </footer>
+
+  <!-- 모바일 메뉴 스크립트 -->
+  <script>
+    function openMobileMenu() {
+      document.getElementById('sidebar').classList.add('active');
+      document.getElementById('mobileOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMobileMenu() {
+      document.getElementById('sidebar').classList.remove('active');
+      document.getElementById('mobileOverlay').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  </script>
+
+  <!-- 관련글 스크립트 -->
+  <b:if cond='data:blog.pageType == "item"'>
+    <script>
+      //<![CDATA[
+      (function() {
+        var labels = [];
+        var currentUrl = window.location.href;
+
+        // 현재 글의 라벨 수집
+        var labelElements = document.querySelectorAll('.post-labels .label-tag');
+        labelElements.forEach(function(el) {
+          labels.push(el.textContent.trim());
+        });
+
+        if (labels.length === 0) {
+          document.getElementById('related-posts-container').innerHTML = '<p style="color: var(--gray-medium); font-size: 14px;">관련글이 없습니다.</p>';
+          return;
+        }
+
+        // 첫 번째 라벨로 관련글 가져오기
+        var feedUrl = '/feeds/posts/default/-/' + encodeURIComponent(labels[0]) + '?alt=json-in-script&callback=showRelatedPosts&max-results=6';
+
+        var script = document.createElement('script');
+        script.src = feedUrl;
+        document.body.appendChild(script);
+      })();
+
+      function showRelatedPosts(data) {
+        var container = document.getElementById('related-posts-container');
+        var currentUrl = window.location.href;
+        var html = '<ul>';
+        var count = 0;
+
+        if (data.feed.entry) {
+          data.feed.entry.forEach(function(entry) {
+            var postUrl = '';
+            entry.link.forEach(function(link) {
+              if (link.rel === 'alternate') {
+                postUrl = link.href;
+              }
+            });
+
+            // 현재 글 제외, 최대 5개
+            if (postUrl !== currentUrl && count < 5) {
+              html += '<li><a href="' + postUrl + '">' + entry.title.$t + '</a></li>';
+              count++;
+            }
+          });
+        }
+
+        html += '</ul>';
+
+        if (count === 0) {
+          container.innerHTML = '<p style="color: var(--gray-medium); font-size: 14px;">관련글이 없습니다.</p>';
+        } else {
+          container.innerHTML = html;
+        }
+      }
+      //]]>
+    </script>
+  </b:if>
+
 </body>
 </html>
