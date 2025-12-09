@@ -55,11 +55,11 @@ function getHtmlTemplate(title: string, content: string, labels: string[]): stri
     }
 
     .layout {
-      max-width: 1100px;
+      max-width: 1334px;
       margin: 0 auto;
       padding: 20px;
       display: grid;
-      grid-template-columns: 1fr 280px;
+      grid-template-columns: 1024px 280px;
       gap: 30px;
     }
 
@@ -158,6 +158,46 @@ function getHtmlTemplate(title: string, content: string, labels: string[]): stri
       background: none;
       padding: 0;
       color: var(--white);
+    }
+
+    .post-body table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+
+    .post-body table th,
+    .post-body table td {
+      border: 1px solid var(--gray-border);
+      padding: 12px 15px;
+      text-align: left;
+    }
+
+    .post-body table th {
+      background: var(--gray-light);
+      font-weight: 600;
+    }
+
+    .post-body table tr:hover {
+      background: var(--gray-light);
+    }
+
+    .post-body blockquote {
+      border-left: 3px solid var(--black);
+      padding-left: 20px;
+      margin: 20px 0;
+      color: var(--gray-medium);
+      font-style: italic;
+    }
+
+    .post-body h2, .post-body h3, .post-body h4 {
+      margin: 30px 0 15px;
+    }
+
+    .post-body ul, .post-body ol {
+      margin: 15px 0;
+      padding-left: 25px;
     }
 
     .post-labels {
